@@ -17,4 +17,5 @@ $sql = "INSERT INTO students (name, class, roll_no, created_at) VALUES ('$std_na
 
 echo json_encode($output);
 
+// add edit ajax and jquery
 ?>
