@@ -1,10 +1,10 @@
 <?php
 include("database.php");
 
-$sql = "SELECT * FROM students WHERE deleted = 0";
+// $sql = "SELECT * FROM students WHERE deleted = 0";
 
-// Execute the SQL query
-$result = $conn->query($sql);
+// // Execute the SQL query
+// $result = $conn->query($sql);
 
 // Check if the query was successful
 // if ($result) {
@@ -26,7 +26,16 @@ $result = $conn->query($sql);
 // }
 
 
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $sql = "SELECT * from students where id = " . $_GET['id'] . " limit 1";
+    $res = $conn->query($sql);
+    $data = mysqli_fetch_assoc($res);
+    print_r($data['id']);
+}
+
+
 ?>
+
 
 
 <!doctype html>
@@ -36,7 +45,12 @@ $result = $conn->query($sql);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Listing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Your custom script -->
+    <script src="js/script.js"></script>
 </head>
 
 <body>
@@ -62,54 +76,71 @@ $result = $conn->query($sql);
             </div>
         </div>
     </nav>
-    <div class="container text-end my-2">
-    <table id="dataTable" class="table table-striped align-middle table-bordered border-secondary text-center table-responsive">
-		  <thead class="bg-primary text-white">
-		    <tr>
-		      <th scope="col">S.N.</th>
-		      <th id="student_name" scope="col">Name</th>
-		      <th scope="col">Class</th>	      
-		      <th scope="col">Roll No</th>
-		      <th scope="col">Action</th>
-		    </tr>
-		  </thead>
+    <section class="container">
 
-          <tbody>
-        <?php
-        if ($result && $result->num_rows > 0) {
-            $sn = 1; // Initialize serial number
-            while ($row = $result->fetch_assoc()) {
-                ?>
-                <tr>
-                    <td><?php echo $sn++; ?></td>
-                    <td><?php echo $row['name']; ?></td>
-                    <td><?php echo $row['class']; ?></td>
-                    <td><?php echo $row['roll_no']; ?></td>
-                    <td>
-                        <!-- Add action buttons here -->
-                        <button class="btn btn-primary">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
-            <?php
-            }
-        } else {
-            // If no records found
-            ?>
-            <tr>
-                <td colspan="5">No records found.</td>
-            </tr>
-        <?php
-        }
-        ?>
-    </tbody>
 
-    </table>
+
+        <div class="row">
+            <div class="col-md-3 my-4">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="search" placeholder="Search name" id="nameInput">
+                    <span class="input-group-append">
+                        <button class="btn btn-outline-secondary bg-primary text-white form-control" id="search_student" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+
+            </div>
+            <div class="col-md-3 my-4">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle col-md-9" type="button" id="sortbyAtribute" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort Data
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="text-decoration-none btn" id="sort_by_name_asc" type="button" href="<?php echo $url_param . "sortby=name&order=asc"; ?>">Sort by Name A-Z</a></li>
+                        <li><a class="text-decoration-none btn" id="sort_by_name_dsc" type="button" href="<?php echo $url_param . "sortby=name&order=desc"; ?>">Sort by Name Z-A</a></li>
+                        <li><a class="text-decoration-none btn" id="sort_by_roll_no" type="button" href="<?php echo $url_param . "sortby=roll_no&order=asc"; ?>">Sort by Roll No</a></li>
+                        <li><a class="text-decoration-none btn" id="sort_by_Class" type="button" href="<?php echo $url_param . "sortby=class&order=asc"; ?>">Sort by Class</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-3 my-4">
+                <button type="button" class="btn btn-primary my-2 float-end col-md-9" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add</button>
+            </div>
+        </div>
+
+
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">+</button>
+        <!-- <div class="container">
+            <button type="button" class="btn btn-primary my-2 float-end" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add</button>
+        </div> -->
 
-        <!-- Modal -->
+
+        <div class="container text-end my-2" id="studentList">
+            <table id="dataTable" class="table table-striped align-middle table-bordered border-secondary text-center table-responsive">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th scope="col">S.N.</th>
+                        <th id="student_name" scope="col">Name</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Roll No</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+            </table>
+
+
+        </div>
+
+
+        <!-- add  Modal -->
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -136,7 +167,7 @@ $result = $conn->query($sql);
                             <div class="mb-3 row">
                                 <label for="inputClass" class="col-sm-2 col-form-label">Class</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="std_class" class="form-control" id="inputClass">
+                                    <input type="number" name="std_class" class="form-control" id="inputClass">
                                 </div>
                             </div>
                         </form>
@@ -149,9 +180,60 @@ $result = $conn->query($sql);
             </div>
         </div>
 
+        <!-- Edit Student Modal -->
+        <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Student</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="update_student_form" method="post" action="">
+                            <?php
+                            if (isset($_GET['id'])) { ?>
+                                <input name="id" type="hidden" class="form-control" id="" value="<?= $_GET['id'] ?>" required>
+                            <?php } ?>
+                            <div class="mb-3 row">
+                                <label for="inputRoll" class="col-sm-2 col-form-label">Roll No</label>
+                                <div class="col-sm-10">
+                                    <input type="number" name="roll_no" class="form-control" value="<?php if (isset($_GET['id'])) {
+                                                                                                        echo $data['roll_no'];
+                                                                                                    } ?>" id="inputRoll" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="std_name" class="form-control" value="<?php if (isset($_GET['id'])) {
+                                                                                                        echo $data['name'];
+                                                                                                    } ?>" id="inputName" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="inputClass" class="col-sm-2 col-form-label">Class</label>
+                                <div class="col-sm-10">
+                                    <input type="number" name="std_class" class="form-control" value="<?php if (isset($_GET['id'])) {
+                                                                                                            echo $data['class'];
+                                                                                                        } ?>" id="inputClass" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="update_student_btn">Update Student</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 
 </html>
@@ -164,8 +246,8 @@ $result = $conn->query($sql);
     // }); 
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<!-- <script>
     $(document).ready(function() {
         $("#add_student_btn").click(function() {
             $.ajax({
@@ -205,4 +287,4 @@ $result = $conn->query($sql);
 
 
 
-</script>
+</script> -->

@@ -10,7 +10,8 @@ if(isset($_GET['deleteid'])){
 
   if($result){
     echo "Deleted Successfull";
-    header('location:listing.php');
+    // header('location:listing.php');
+    header('location:listing1.php');
   }else{
     die(mysqli_error($conn));
   }
