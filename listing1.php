@@ -26,14 +26,38 @@ include("database.php");
 // }
 
 
-if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $sql = "SELECT * from students where id = " . $_GET['id'] . " limit 1";
-    $res = $conn->query($sql);
-    $data = mysqli_fetch_assoc($res);
-    print_r($data['id']);
-}
+// SQL query
 
+// $param_exists = false;
+// $url_param = '?';
+// if (isset($_GET['pageno'])) {
+// 	$pageno = $_GET['pageno'];
+// 	$param_exists = true;
+// 	$url_param = "?pageno=".$_GET['pageno']."&";
+// } else {
+// 	$pageno = 1;
+// }
 
+// $no_of_records_per_page = 5;
+// $offset = ($pageno-1) * $no_of_records_per_page;
+
+// $total_pages_sql = "SELECT COUNT(*) FROM students WHERE deleted = 0 ";
+// $result = mysqli_query($conn,$total_pages_sql);
+// $total_rows = mysqli_fetch_array($result)[0];
+// $total_pages = ceil($total_rows / $no_of_records_per_page);
+
+// $sort_by = "name";
+// $sort_order = "asc";
+// if(isset($_GET['sortby']) && isset($_GET['order'])) {
+// 	$sort_by = $_GET['sortby'];
+// 	$sort_order = $_GET['order'];
+// }
+
+// $sql = "SELECT * FROM students  where deleted = 0 ORDER BY $sort_by $sort_order LIMIT $offset, $no_of_records_per_page";
+// // $sql = "SELECT * FROM students  where deleted = 0 ORDER BY name DSC LIMIT $offset, $no_of_records_per_page";
+
+// // Execute the query
+// $result = $conn->query($sql);
 ?>
 
 
@@ -93,17 +117,19 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
             </div>
             <div class="col-md-3 my-4">
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle col-md-9" type="button" id="sortbyAtribute" data-bs-toggle="dropdown" aria-expanded="false">
-                        Sort Data
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="text-decoration-none btn" id="sort_by_name_asc" type="button" href="<?php echo $url_param . "sortby=name&order=asc"; ?>">Sort by Name A-Z</a></li>
-                        <li><a class="text-decoration-none btn" id="sort_by_name_dsc" type="button" href="<?php echo $url_param . "sortby=name&order=desc"; ?>">Sort by Name Z-A</a></li>
-                        <li><a class="text-decoration-none btn" id="sort_by_roll_no" type="button" href="<?php echo $url_param . "sortby=roll_no&order=asc"; ?>">Sort by Roll No</a></li>
-                        <li><a class="text-decoration-none btn" id="sort_by_Class" type="button" href="<?php echo $url_param . "sortby=class&order=asc"; ?>">Sort by Class</a></li>
-                    </ul>
-                </div>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle col-md-9" type="button" id="sortbyAtribute" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sort Data
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="asc" >Sort by Name A-Z</a></li>
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="desc">Sort by Name Z-A</a></li>
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="asc">Sort by Roll No ASC</a></li>
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="desc">Sort by Roll No DESC</a></li>
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="asc" >Sort by Class ASC</a></li>
+                    <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="desc">Sort by Class DESC</a></li>
+                </ul>
+            </div>
             </div>
             <div class="col-md-3"></div>
             <div class="col-md-3 my-4">

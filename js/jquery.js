@@ -79,15 +79,23 @@ $(document).on("click", "#search_student", function() {
     fetchStudents(searchText);
 });
 
+$(document).on("click", ".sort-link", function() {
+    var sortby = $(this).data('sortby');
+    var order = $(this).data('order');
+    fetchStudents('', sortby, order);
+    // alert(123);
+});
 
-
-function fetchStudents(search = '') {
+function fetchStudents(search = '', sortby = 'name', order = 'asc') {
+    if(search == '') {
+        search = $("#nameInput").val();
+    }
     // alert(6666)
     $.ajax({
         url: 'fetch_students.php',
         method: 'POST',
         dataType: 'json',
-        data: { search: search} ,
+        data: { search: search, sortby: sortby, order: order },
         success: function(response) {
             // Clear existing table data
             $('#dataTable tbody').empty();

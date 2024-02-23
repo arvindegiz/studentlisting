@@ -2,30 +2,33 @@
 // Include database connection
 include 'database.php';
 
-// print_r($_POST); die;
-if(isset($_POST['search'])) {
+$wherePlus = ' WHERE deleted = 0 ';
+if(isset($_POST['search']) &&  !empty($_POST['search'])) {
     $search = mysqli_real_escape_string($conn, $_POST['search']);
-    $sql = "SELECT * FROM students WHERE name LIKE '%$search%'";
-    $result = mysqli_query($conn, $sql);
-    // print_r($result);
+    $wherePlus .= " AND name LIKE '%$search%' ";
+} 
 
 
-    // Fetch students from the database
-    // $sql = "SELECT * FROM students";
-    // $result = $conn->query($sql);
+$sortby = !empty($_POST['sortby']) ? $_POST['sortby'] : 'name';
+$order = !empty($_POST['order']) ? $_POST['order'] : 'asc';
 
-    $students = []; // Initialize an empty array to store student data
 
-    // Check if there are any rows returned from the query
-    if ($result->num_rows > 0) {
-    // Loop through each row of the result set
+
+// $sql = "SELECT * FROM students WHERE deleted = 0 ORDER BY name $order";
+$sql = "SELECT * FROM students "  . $wherePlus . " ORDER BY " . $sortby . " " . $order;
+
+$result = mysqli_query($conn, $sql);
+
+$students = []; 
+
+if ($result->num_rows > 0) {
+
     while ($row = $result->fetch_assoc()) {
-        // Add each row (student data) to the $students array
         $students[] = $row;
     }
-    }
 }
-// Close the database connection
+    
+
 $conn->close();
 
 // Output students as JSON
