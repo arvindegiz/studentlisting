@@ -58,6 +58,27 @@ include("database.php");
 
 // // Execute the query
 // $result = $conn->query($sql);
+// $param_exists = false;
+// $url_param = '?';
+// if (isset($_GET['pageno'])) {
+// 	$pageno = $_GET['pageno'];
+// 	$param_exists = true;
+// 	$url_param = "?pageno=".$_GET['pageno']."&";
+// } else {
+// 	$pageno = 1;
+// }
+
+// $no_of_records_per_page = 5;
+// $offset = ($pageno-1) * $no_of_records_per_page;
+
+// $total_pages_sql = "SELECT COUNT(*) FROM students WHERE deleted = 0 ";
+// $result = mysqli_query($conn,$total_pages_sql);
+// $total_rows = mysqli_fetch_array($result)[0];
+// $total_pages = ceil($total_rows / $no_of_records_per_page);
+
+
+// $sql = "SELECT * FROM students  where deleted = 0 LIMIT $offset, $no_of_records_per_page";
+// $result = $conn->query($sql);
 ?>
 
 
@@ -73,6 +94,8 @@ include("database.php");
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="dist/pagination.min.js"></script>
+
     <!-- Your custom script -->
     <script src="js/jquery.js"></script>
 </head>
@@ -117,19 +140,19 @@ include("database.php");
 
             </div>
             <div class="col-md-3 my-4">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle col-md-9" type="button" id="sortbyAtribute" data-bs-toggle="dropdown" aria-expanded="false">
-                    Sort Data
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="asc" >Sort by Name A-Z</a></li>
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="desc">Sort by Name Z-A</a></li>
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="asc">Sort by Roll No ASC</a></li>
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="desc">Sort by Roll No DESC</a></li>
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="asc" >Sort by Class ASC</a></li>
-                    <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="desc">Sort by Class DESC</a></li>
-                </ul>
-            </div>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle col-md-9" type="button" id="sortbyAtribute" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort Data
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="asc">Sort by Name A-Z</a></li>
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="name" data-order="desc">Sort by Name Z-A</a></li>
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="asc">Sort by Roll No ASC</a></li>
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="roll_no" data-order="desc">Sort by Roll No DESC</a></li>
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="asc">Sort by Class ASC</a></li>
+                        <li><a class="text-decoration-none btn sort-link" data-sortby="class" data-order="desc">Sort by Class DESC</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-3"></div>
             <div class="col-md-3 my-4">
@@ -161,7 +184,25 @@ include("database.php");
 
                 </tbody>
             </table>
-
+<!-- 
+            <nav aria-label="...">
+                <ul class="pagination justify-content-center" id="pagination-container">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#" data-page="2">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#" data-page="3">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="next">Next</a>
+                    </li>
+                </ul>
+            </nav> -->
+            <div class="d-flex justify-content-center">
+				<div id="pagination_data"></div>
+			</div>
 
         </div>
 
