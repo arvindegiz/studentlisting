@@ -2,21 +2,29 @@
 // Include database connection
 include 'database.php';
 
-// Fetch students from the database
-$sql = "SELECT * FROM students";
-$result = $conn->query($sql);
+// print_r($_POST); die;
+if(isset($_POST['search'])) {
+    $search = mysqli_real_escape_string($conn, $_POST['search']);
+    $sql = "SELECT * FROM students WHERE name LIKE '%$search%'";
+    $result = mysqli_query($conn, $sql);
+    // print_r($result);
 
-$students = []; // Initialize an empty array to store student data
 
-// Check if there are any rows returned from the query
-if ($result->num_rows > 0) {
+    // Fetch students from the database
+    // $sql = "SELECT * FROM students";
+    // $result = $conn->query($sql);
+
+    $students = []; // Initialize an empty array to store student data
+
+    // Check if there are any rows returned from the query
+    if ($result->num_rows > 0) {
     // Loop through each row of the result set
     while ($row = $result->fetch_assoc()) {
         // Add each row (student data) to the $students array
         $students[] = $row;
     }
+    }
 }
-
 // Close the database connection
 $conn->close();
 

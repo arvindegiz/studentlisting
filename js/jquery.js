@@ -74,13 +74,20 @@ $(document).on("click", "#add_student_btn", function() {
    
 });
 
+$(document).on("click", "#search_student", function() {
+    var searchText = $("#nameInput").val();
+    fetchStudents(searchText);
+});
 
-function fetchStudents() {
+
+
+function fetchStudents(search = '') {
     // alert(6666)
     $.ajax({
         url: 'fetch_students.php',
-        method: 'GET',
+        method: 'POST',
         dataType: 'json',
+        data: { search: search} ,
         success: function(response) {
             // Clear existing table data
             $('#dataTable tbody').empty();
@@ -105,45 +112,3 @@ function fetchStudents() {
         }
     });
 }
-
-
-// $(document).ready(function() {
-//     $('#search_student').click(function() {
-//         var searchValue = $('#nameInput').val();
-//         // Perform Ajax request
-//         $.ajax({
-//             url: 'search.php', // Your PHP file to handle the search request
-//             method: 'POST',
-//             data: { search: searchValue }, // Pass the search value as a POST parameter
-//             dataType: 'json',
-//             success: function(response) {
-//                 // Clear existing table data
-//                 $('#dataTable tbody').empty();
-                
-//                 if (response && response.length > 0) {
-//                     // Append rows for each student
-//                     $.each(response, function(index, student) {
-//                         var newRow = '<tr>' +
-//                             '<td>' + (index + 1) + '</td>' +
-//                             '<td>' + student.name + '</td>' +
-//                             '<td>' + student.class + '</td>' +
-//                             '<td>' + student.roll_no + '</td>' +
-//                             '<td>' +
-//                             '<button class="btn btn-primary">Edit</button>' +
-//                             '<button class="btn btn-danger">Delete</button>' +
-//                             '</td>' +
-//                             '</tr>';
-//                         $('#dataTable tbody').append(newRow);
-//                     });
-//                 } else {
-//                     // No matching records found
-//                     $('#dataTable tbody').append('<tr><td colspan="5">No matching records found</td></tr>');
-//                 }
-//             },
-//             error: function(xhr, status, error) {
-//                 // Handle errors
-//                 console.error(error);
-//             }
-//         });
-//     });
-// });
